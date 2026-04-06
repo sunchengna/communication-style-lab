@@ -1,1 +1,543 @@
-# communication-style-lab
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>沟通风格实验室 — 冲突处理风格测评</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f7fa; color: #333; line-height: 1.6; }
+.container { max-width: 800px; margin: 0 auto; padding: 20px; }
+
+/* 品牌头 */
+.brand-header { text-align: center; padding: 20px 0 10px; }
+.brand-logo { font-size: 14px; color: #4f6df5; font-weight: 600; letter-spacing: 1px; }
+
+/* 介绍页 */
+.intro { text-align: center; padding: 40px 20px; }
+.intro h1 { font-size: 26px; margin-bottom: 8px; color: #1a1a2e; }
+.intro .subtitle { font-size: 14px; color: #999; margin-bottom: 30px; }
+.intro .dimension-badge { display: inline-block; padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 500; background: linear-gradient(135deg, #e8f0fe, #dbeafe); color: #2563eb; margin-bottom: 24px; }
+.intro .hook-box { background: #fff; border-radius: 12px; padding: 24px; text-align: left; margin-bottom: 30px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); border-left: 4px solid #4f6df5; }
+.intro .hook-box p { font-size: 15px; color: #444; line-height: 1.8; }
+.intro .hook-box .hook-highlight { color: #4f6df5; font-weight: 600; }
+.intro .instructions { background: #fff; border-radius: 12px; padding: 24px; text-align: left; margin-bottom: 30px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+.intro .instructions .info-row { display: flex; justify-content: space-around; text-align: center; }
+.intro .instructions .info-item { flex: 1; }
+.intro .instructions .info-num { font-size: 24px; font-weight: 700; color: #4f6df5; }
+.intro .instructions .info-label { font-size: 12px; color: #999; }
+
+/* 答题页 */
+.quiz-header { position: sticky; top: 0; background: #fff; padding: 16px 0; border-bottom: 1px solid #e8e8e8; z-index: 100; margin-bottom: 20px; }
+.progress-bar { height: 6px; background: #e8e8e8; border-radius: 3px; overflow: hidden; margin-bottom: 8px; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, #4f6df5, #7c5cfc); border-radius: 3px; transition: width 0.3s; }
+.progress-text { font-size: 13px; color: #999; text-align: right; }
+.dimension-tag { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 13px; margin-bottom: 16px; font-weight: 500; background: #e8f0fe; color: #1967d2; }
+.question-card { background: #fff; border-radius: 12px; padding: 28px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+.question-text { font-size: 17px; font-weight: 500; color: #1a1a2e; margin-bottom: 20px; line-height: 1.7; }
+.option-list { display: flex; flex-direction: column; gap: 10px; }
+.option { padding: 14px 18px; border: 2px solid #e8e8e8; border-radius: 10px; cursor: pointer; transition: all 0.2s; font-size: 15px; color: #444; position: relative; }
+.option:hover { border-color: #b0c4ff; background: #f8faff; }
+.option.selected { border-color: #4f6df5; background: #f0f4ff; color: #1a1a2e; }
+.option .opt-label { font-weight: 600; margin-right: 8px; }
+.nav-buttons { display: flex; justify-content: space-between; margin-top: 20px; }
+.btn { padding: 12px 32px; border-radius: 8px; border: none; font-size: 15px; cursor: pointer; transition: all 0.2s; font-weight: 500; }
+.btn-primary { background: #4f6df5; color: #fff; }
+.btn-primary:hover { background: #3d5be0; }
+.btn-primary:disabled { background: #ccc; cursor: not-allowed; }
+.btn-secondary { background: #fff; color: #4f6df5; border: 1px solid #4f6df5; }
+.btn-secondary:hover { background: #f0f4ff; }
+
+/* 报告页 */
+.report { padding: 20px 0; }
+.report h1 { font-size: 24px; text-align: center; margin-bottom: 8px; color: #1a1a2e; }
+.report .report-subtitle { text-align: center; color: #999; margin-bottom: 30px; font-size: 14px; }
+.report-section { background: #fff; border-radius: 12px; padding: 28px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+.report-section h2 { font-size: 18px; color: #1a1a2e; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #f0f0f0; }
+
+/* 风格类型卡片 */
+.style-card { text-align: center; padding: 30px 20px; margin-bottom: 20px; }
+.style-name { font-size: 28px; font-weight: 700; color: #4f6df5; margin-bottom: 4px; }
+.style-score { font-size: 14px; color: #999; }
+.style-desc { font-size: 15px; color: #555; line-height: 1.8; margin-top: 16px; text-align: left; }
+
+/* 画像条 */
+.profile-bar-container { position: relative; height: 50px; }
+.profile-bar { position: absolute; top: 16px; left: 0; right: 0; height: 6px; background: #f0f0f0; border-radius: 3px; }
+.profile-segments { position: absolute; top: 16px; left: 0; right: 0; height: 6px; display: flex; border-radius: 3px; overflow: hidden; }
+.profile-segments span { flex: 1; }
+.seg-low { background: #fce8e6; }
+.seg-mid { background: #fef7e0; }
+.seg-high { background: #e6f4ea; }
+.profile-point { position: absolute; top: 8px; width: 22px; height: 22px; background: #4f6df5; border: 3px solid #fff; border-radius: 50%; box-shadow: 0 2px 6px rgba(0,0,0,0.2); transform: translateX(-50%); z-index: 2; transition: left 0.8s ease; left: 2%; }
+.profile-labels { position: absolute; top: 28px; left: 0; right: 0; display: flex; font-size: 11px; color: #999; }
+.profile-labels span { flex: 1; text-align: center; }
+
+/* 场景回顾 */
+.scenario-box { background: #f8faff; border-left: 3px solid #4f6df5; padding: 12px 16px; border-radius: 0 8px 8px 0; margin-bottom: 12px; }
+.scenario-box .q-label { font-size: 12px; color: #4f6df5; font-weight: 600; margin-bottom: 4px; }
+.scenario-box .q-text { font-size: 13px; color: #666; margin-bottom: 6px; }
+.scenario-box .your-choice { font-size: 13px; color: #1a1a2e; font-weight: 500; }
+.scenario-box .choice-analysis { font-size: 13px; color: #555; margin-top: 6px; line-height: 1.7; }
+
+/* 改进建议 */
+.action-item { display: flex; gap: 12px; margin-bottom: 16px; align-items: flex-start; }
+.action-num { min-width: 28px; height: 28px; background: #4f6df5; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; }
+.action-text { font-size: 14px; color: #555; line-height: 1.7; }
+.action-text strong { color: #1a1a2e; }
+
+/* 分享区域 */
+.share-section { text-align: center; padding: 20px; }
+.share-section h3 { font-size: 16px; color: #1a1a2e; margin-bottom: 16px; }
+.share-buttons { display: flex; justify-content: center; gap: 16px; margin-bottom: 20px; }
+.share-btn { display: flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; border: 1px solid #e8e8e8; background: #fff; cursor: pointer; font-size: 14px; transition: all 0.2s; }
+.share-btn:hover { border-color: #4f6df5; background: #f8faff; }
+.share-btn .icon { font-size: 18px; }
+
+/* 下一维度引导 */
+.next-dim { background: linear-gradient(135deg, #f0f4ff, #e8f0fe); border-radius: 12px; padding: 24px; text-align: center; margin: 20px 0; }
+.next-dim h3 { font-size: 16px; color: #1a1a2e; margin-bottom: 8px; }
+.next-dim p { font-size: 14px; color: #666; margin-bottom: 16px; }
+.next-dim .btn { display: inline-block; padding: 12px 32px; }
+
+.restart-btn { display: block; margin: 30px auto; padding: 14px 40px; }
+
+/* 品牌底部 */
+.brand-footer { text-align: center; padding: 30px 0 20px; color: #ccc; font-size: 12px; }
+.brand-footer a { color: #4f6df5; text-decoration: none; }
+
+/* 隐藏 */
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- 介绍页 -->
+<div id="introPage" class="container">
+  <div class="brand-header">
+    <div class="brand-logo">沟通风格实验室</div>
+  </div>
+  <div class="intro">
+    <h1>冲突处理风格测评</h1>
+    <p class="subtitle">看看你在面对分歧和冲突时，是哪种风格</p>
+    <div class="dimension-badge">维度 1/11 · 冲突处理</div>
+
+    <div class="hook-box">
+      <p>
+        你的下属<span class="hook-highlight">当面答应"好的没问题"</span>，一周后你发现他根本没做。<br><br>
+        更扎心的是，他其实觉得任务不合理，但<span class="hook-highlight">不好意思当面拒绝你</span>。<br><br>
+        面对这种情况，你是暴怒、理解、还是换个方式沟通？<br><br>
+        <strong>测一测，2分钟就知道你是哪种风格。</strong>
+      </p>
+    </div>
+
+    <div class="instructions">
+      <div class="info-row">
+        <div class="info-item">
+          <div class="info-num">4</div>
+          <div class="info-label">道情景题</div>
+        </div>
+        <div class="info-item">
+          <div class="info-num">2</div>
+          <div class="info-label">分钟完成</div>
+        </div>
+        <div class="info-item">
+          <div class="info-num">即时</div>
+          <div class="info-label">出报告</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" onclick="startQuiz()">开始测评</button>
+  </div>
+</div>
+
+<!-- 答题页 -->
+<div id="quizPage" class="container hidden">
+  <div class="quiz-header">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-text" id="progressText">0 / 4</div>
+  </div>
+  <div id="questionContainer"></div>
+  <div class="nav-buttons">
+    <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" disabled>上一题</button>
+    <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">下一题</button>
+  </div>
+</div>
+
+<!-- 报告页 -->
+<div id="reportPage" class="container hidden"></div>
+
+<script>
+// ========== 数据定义 ==========
+const dimensions = {
+  name: '冲突处理',
+  levels: [
+    {
+      name: '回避型',
+      min: 4, max: 8,
+      color: 'level-low',
+      desc: '你在面对冲突时，倾向于回避或拖延处理。你可能会因为怕破坏关系、担心尴尬，或者觉得"忍一忍就过去了"而选择不直接表达立场。',
+      pros: ['在某些高语境文化中，回避被理解为"给面子"', '短期减少了冲突的紧张感'],
+      cons: ['问题会持续发酵，越拖越大', '团队会解读为"领导不管事"', '剥夺了下属从冲突中学习成长的机会', '你自己承担了额外的心理和工作负担'],
+      actions: ['下次遇到分歧时，尝试先说一句"我理解你的想法，我有不同看法，我们聊聊"', '找一个你习惯回避的场景，提前准备一句话，练习在那个场景中表达立场']
+    },
+    {
+      name: '对抗型',
+      min: 8, max: 12,
+      color: 'level-mid',
+      desc: '你在面对冲突时，倾向于直接表达立场和要求。你的风格清晰、不含糊，但有时可能忽略了对方的感受或缺少替代方案。',
+      pros: ['在紧急情况下能快速推动决策', '团队知道你的标准和底线', '减少了模糊性和误解'],
+      cons: ['在跨文化场景中可能被解读为"不尊重"', '下属可能表面服从但内心抵触', '长期对抗会消耗团队信任', '只说"不行"没说"怎么办"容易陷入僵局'],
+      actions: ['下次表达不同意见时，试着先问一个问题再下结论', '练习"方案化表达"：不说"不行"，而是说"我建议我们这样..."']
+    },
+    {
+      name: '建设性主张型',
+      min: 12, max: 17,
+      color: 'level-high',
+      desc: '你在面对冲突时，善于在坚持原则和维护关系之间找到平衡。你不会回避问题，但也不会简单粗暴地对抗，而是用建设性的方式表达不同意见，甚至邀请对方一起找解决方案。',
+      pros: ['兼顾了立场表达和关系维护', '团队感到被尊重，更愿意配合', '冲突变成了解决问题的机会', '这是Thomas-Kilmann模型中最有效的风格'],
+      cons: ['在极度紧急的情况下可能被嫌"不够果断"', '需要更多时间来沟通和引导', '可以进一步练习在高压场景中也能保持建设性'],
+      actions: ['继续发挥优势，同时注意在紧急场景中适度提速', '帮助团队成员也发展出建设性主张的能力']
+    }
+  ]
+};
+
+// 4道题
+const questions = [
+  {
+    text: '你发现下属提交的方案存在明显漏洞，如果按这个方案执行，可能会导致项目延期。但这位下属为了这个方案已经加班了一周，现在正兴致勃勃地准备向客户汇报。',
+    options: [
+      { text: '直接指出方案的问题，要求他重新修改', score: 2, strategy: '直接对抗', analysis: '表达清晰不含糊，但忽视了对方的情感投入。在跨文化或高权力距离场景中可能被解读为"不尊重劳动成果"。' },
+      { text: '先肯定他的努力，然后具体指出哪些地方需要调整，并一起讨论修改方向', score: 4, strategy: '建设性主张', analysis: '既表达了真实立场，又维护了关系——这是Thomas-Kilmann模型中"协作"策略的核心：关注利益而非立场。' },
+      { text: '觉得不好意思表达不满意，决定自己私下帮他修补方案', score: 1, strategy: '回避-替他完成', analysis: '短期内避免了冲突，但剥夺了下属成长的机会，且自己承担了额外工作量，不可持续。' },
+      { text: '跟他说"差不多就行了"，先推给客户看反馈再说', score: 1, strategy: '回避-拖延', analysis: '把问题推给外部（客户），既没有解决问题也没有表达立场，可能导致更大的信任损失。' }
+    ]
+  },
+  {
+    text: '部门会议上，另一位部门负责人公开质疑你的团队最近的业绩数据，语气比较强硬。在场有你的下属和其他部门同事。你确认自己的数据没有问题。',
+    options: [
+      { text: '当场用同样的强硬语气反驳，拿出数据逐一回击', score: 2, strategy: '正面对抗', analysis: '维护了事实准确性，但在公开场合升级对抗可能损害跨部门关系，且给下属示范了"以硬对硬"的模式。' },
+      { text: '保持冷静，回应说："这个数据我回去再核实一下，会后我们单独对齐，如果确实有问题我来调整"', score: 3, strategy: '冷静缓冲', analysis: '避免了公开冲突升级，但没有在当下表达"我的数据没问题"这一事实，可能被解读为底气不足。' },
+      { text: '平静地说："我理解你的关注，这个数据是我们基于XX系统导出的，我可以会后把原始数据发给你核对。同时也想了解你关注的是哪个维度"', score: 4, strategy: '事实主张+开放探索', analysis: '用事实回应质疑（不是情绪），同时表达对对方关切的理解——这是"协作"策略，既坚定又开放。' },
+      { text: '保持沉默不回应，会后再私下找对方谈', score: 2, strategy: '公开回避-私下处理', analysis: '避免了公开冲突，但在众人面前沉默可能被解读为"默认有问题"，影响团队对你判断力的信心。' }
+    ]
+  },
+  {
+    text: '你的上级交给你一个任务，要求你在两周内完成一个需要一个月才能做好的项目。你评估后认为两周确实做不完，但上级看起来很坚持。',
+    options: [
+      { text: '硬着头皮答应下来，然后让团队加班赶工', score: 1, strategy: '顺从-超负荷执行', analysis: '表面上"配合"了上级，但用团队透支换取短期交付，且没有解决问题的根本（时间不合理）。' },
+      { text: '直接说"两周做不了，必须一个月"', score: 2, strategy: '直接拒绝', analysis: '表达了真实立场，但只给了拒绝没给替代方案，容易陷入僵局。' },
+      { text: '分析两周能完成哪些核心模块，跟上级说："两周可以先交付A和B，C和D需要再一周。我建议分两期交付，您看这个节奏可以吗？"', score: 4, strategy: '方案化主张', analysis: '没有简单说"不"，而是用方案替代立场——Thomas-Kilmann"协作"策略的典型表现，给上级选择权而非直接对抗。' },
+      { text: '答应下来，做到哪算哪，到时候再说', score: 1, strategy: '回避-被动应对', analysis: '最差选项：既没表达立场，也没解决问题，最终可能两头不讨好。' }
+    ]
+  },
+  {
+    text: '团队里两位骨干成员因为一个项目的方向产生了分歧，双方都来找你"评理"，各自都有道理，但立场对立。',
+    options: [
+      { text: '听完双方意见后，自己拍板选一个方向，告诉另一个人"执行就好"', score: 2, strategy: '权威裁决', analysis: '快速解决了分歧，但没有让双方参与决策过程，被否决的一方可能口服心不服。' },
+      { text: '跟他们说"你们自己商量好了再来找我"，把问题推回去', score: 1, strategy: '回避-转移', analysis: '表面上"授权"了，实际上是回避管理者在分歧中应有的协调角色。' },
+      { text: '组织一次三人讨论，让双方各自呈现依据，引导他们找到共同目标，然后一起讨论可能的折中方案或第三条路', score: 4, strategy: '协作式引导', analysis: '把分歧转化为共同解决问题的过程——不仅解决了当前冲突，还示范了建设性讨论的方式。' },
+      { text: '为了避免得罪人，支持强势的一方，私下安抚另一方', score: 1, strategy: '回避-私下安抚', analysis: '表面和谐但实际不公平，长期会破坏信任——被安抚的一方会发现"领导说一套做一套"。' }
+    ]
+  }
+];
+
+// ========== 全局状态 ==========
+let currentQ = 0;
+let answers = new Array(4).fill(-1);
+
+// ========== 页面切换 ==========
+function showPage(id) {
+  document.querySelectorAll('.container').forEach(el => el.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+  window.scrollTo(0, 0);
+}
+
+function startQuiz() {
+  showPage('quizPage');
+  renderQuestion();
+}
+
+// ========== 答题逻辑 ==========
+function renderQuestion() {
+  const q = questions[currentQ];
+  const total = questions.length;
+  const answered = answers.filter(a => a !== -1).length;
+
+  document.getElementById('progressFill').style.width = ((answered / total) * 100) + '%';
+  document.getElementById('progressText').textContent = answered + ' / ' + total;
+
+  let html = `
+    <div class="question-card">
+      <span class="dimension-tag">冲突处理</span>
+      <div class="question-text">Q${currentQ+1}. ${q.text}</div>
+      <div class="option-list">
+  `;
+
+  q.options.forEach((opt, i) => {
+    const selected = answers[currentQ] === i ? ' selected' : '';
+    html += `<div class="option${selected}" onclick="selectOption(${i})">
+      <span class="opt-label">${String.fromCharCode(65+i)}.</span>${opt.text}
+    </div>`;
+  });
+
+  html += `</div></div>`;
+  document.getElementById('questionContainer').innerHTML = html;
+
+  document.getElementById('prevBtn').disabled = currentQ === 0;
+  const nextBtn = document.getElementById('nextBtn');
+  if (currentQ === total - 1) {
+    nextBtn.textContent = answered === total ? '查看报告' : `已完成 ${answered}/${total}，提交查看报告`;
+    nextBtn.disabled = false;
+  } else {
+    nextBtn.textContent = '下一题';
+    nextBtn.disabled = false;
+  }
+}
+
+function selectOption(idx) {
+  answers[currentQ] = idx;
+  // 自动跳下一题
+  if (currentQ < questions.length - 1) {
+    setTimeout(() => {
+      currentQ++;
+      renderQuestion();
+    }, 200);
+  } else {
+    renderQuestion();
+  }
+}
+
+function nextQuestion() {
+  if (currentQ < questions.length - 1) {
+    currentQ++;
+    renderQuestion();
+  } else {
+    const unanswered = [];
+    for (let i = 0; i < 4; i++) {
+      if (answers[i] === -1) unanswered.push(i + 1);
+    }
+    if (unanswered.length > 0) {
+      if (!confirm(`你还有第 ${unanswered.join('、')} 题未作答，确定要提交查看报告吗？`)) return;
+    }
+    generateReport();
+  }
+}
+
+function prevQuestion() {
+  if (currentQ > 0) {
+    currentQ--;
+    renderQuestion();
+  }
+}
+
+// ========== 评分与报告 ==========
+function calculateScore() {
+  let total = 0;
+  questions.forEach((q, i) => {
+    if (answers[i] !== -1) {
+      total += q.options[answers[i]].score;
+    }
+  });
+  return total;
+}
+
+function getLevel(score) {
+  for (let i = 0; i < dimensions.levels.length; i++) {
+    if (score >= dimensions.levels[i].min && score < dimensions.levels[i].max) {
+      return dimensions.levels[i];
+    }
+  }
+  return dimensions.levels[dimensions.levels.length - 1];
+}
+
+function generateReport() {
+  const score = calculateScore();
+  const level = getLevel(score);
+  const now = new Date();
+  const dateStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
+
+  // 画像条位置（4-16分映射到0-100%）
+  const percent = ((score - 4) / 12) * 100;
+
+  let html = `
+    <div class="brand-header">
+      <div class="brand-logo">沟通风格实验室</div>
+    </div>
+
+    <div class="report">
+      <h1>你的冲突处理风格报告</h1>
+      <p class="report-subtitle">测评日期：${dateStr}</p>
+
+      <!-- 风格类型 -->
+      <div class="report-section">
+        <div class="style-card">
+          <div class="style-name">${level.name}</div>
+          <div class="style-score">得分：${score} / 16</div>
+          <div class="style-desc">${level.desc}</div>
+        </div>
+
+        <!-- 画像条 -->
+        <div class="profile-bar-container">
+          <div class="profile-segments">
+            <span class="seg-low"></span>
+            <span class="seg-mid"></span>
+            <span class="seg-high"></span>
+          </div>
+          <div class="profile-point" id="profilePoint" style="left: 2%"></div>
+          <div class="profile-labels">
+            <span>回避型</span>
+            <span>对抗型</span>
+            <span>建设性主张型</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 优劣势分析 -->
+      <div class="report-section">
+        <h2>你的风格分析</h2>
+        <div style="margin-bottom:20px">
+          <h4 style="font-size:14px; color:#137333; margin-bottom:8px;">✓ 这个风格的好处</h4>
+          <ul style="padding-left:20px;">
+            ${level.pros.map(p => `<li style="font-size:14px; color:#555; margin-bottom:4px; line-height:1.7;">${p}</li>`).join('')}
+          </ul>
+        </div>
+        <div>
+          <h4 style="font-size:14px; color:#c5221f; margin-bottom:8px;">⚠ 潜在风险</h4>
+          <ul style="padding-left:20px;">
+            ${level.cons.map(c => `<li style="font-size:14px; color:#555; margin-bottom:4px; line-height:1.7;">${c}</li>`).join('')}
+          </ul>
+        </div>
+      </div>
+
+      <!-- 场景回顾 -->
+      <div class="report-section">
+        <h2>你的选择分析</h2>
+  `;
+
+  questions.forEach((q, i) => {
+    if (answers[i] !== -1) {
+      const chosen = q.options[answers[i]];
+      const bestIdx = q.options.reduce((best, opt, idx) => opt.score > q.options[best].score ? idx : best, 0);
+      html += `
+        <div class="scenario-box">
+          <div class="q-label">Q${i+1}</div>
+          <div class="q-text">${q.text}</div>
+          <div class="your-choice">你选了${String.fromCharCode(65+answers[i])}：${chosen.text}</div>
+          <div class="choice-analysis">${chosen.analysis}</div>
+          ${answers[i] !== bestIdx ? `<div style="margin-top:8px; font-size:12px; color:#137333; font-weight:500;">参考最佳选择：${String.fromCharCode(65+bestIdx)}：${q.options[bestIdx].text}</div>` : `<div style="margin-top:8px; font-size:12px; color:#137333; font-weight:500;">✓ 这就是最佳选择！</div>`}
+        </div>
+      `;
+    }
+  });
+
+  html += `</div>`;
+
+  // 改进建议
+  html += `
+    <div class="report-section">
+      <h2>改进建议</h2>
+      <p style="color:#666; margin-bottom:16px; font-size:14px;">基于你的测评结果：</p>
+  `;
+
+  level.actions.forEach((action, i) => {
+    html += `
+      <div class="action-item">
+        <div class="action-num">${i+1}</div>
+        <div class="action-text">${action}</div>
+      </div>
+    `;
+  });
+
+  html += `</div>`;
+
+  // 分享区域
+  html += `
+    <div class="report-section">
+      <div class="share-section">
+        <h3>分享给朋友</h3>
+        <div class="share-buttons">
+          <button class="share-btn" onclick="shareToWechat()">
+            <span class="icon">  </span>分享到微信
+          </button>
+          <button class="share-btn" onclick="copyLink()">
+            <span class="icon"> </span>复制链接
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // 重新测评引导
+  html += `
+    <div class="next-dim">
+      <h3>你的结果准吗？</h3>
+      <p>如果你觉得某道题选得犹豫，可以重新测一次。不同场景下你的风格可能会不同。</p>
+      <button class="btn btn-primary" onclick="restart()">重新测一次</button>
+    </div>
+  `;
+
+  // 底部
+  html += `
+    <div class="brand-footer">
+      <p>沟通风格实验室 · 帮你看见自己的沟通盲区</p>
+    </div>
+  `;
+
+  document.getElementById('reportPage').innerHTML = html;
+  showPage('reportPage');
+
+  // 动画效果
+  setTimeout(() => {
+    const point = document.getElementById('profilePoint');
+    if (point) {
+      point.style.left = Math.max(5, Math.min(95, percent)) + '%';
+    }
+  }, 100);
+}
+
+function restart() {
+  answers = new Array(4).fill(-1);
+  currentQ = 0;
+  showPage('introPage');
+}
+
+// ========== 分享功能 ==========
+function shareToWechat() {
+  // 尝试使用Web Share API
+  if (navigator.share) {
+    navigator.share({
+      title: '沟通风格实验室 — 冲突处理风格测评',
+      text: '我在"沟通风格实验室"测了一下我的冲突处理风格，你也来测测看！',
+      url: window.location.href
+    }).catch(() => {
+      copyLink();
+    });
+  } else {
+    copyLink();
+  }
+}
+
+function copyLink() {
+  const url = window.location.href;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url).then(() => {
+      alert('链接已复制，可以分享给朋友啦！');
+    });
+  } else {
+    // fallback
+    const input = document.createElement('input');
+    input.value = url;
+    document.body.appendChild(input);
+    input.select();
+    document.execCommand('copy');
+    document.body.removeChild(input);
+    alert('链接已复制，可以分享给朋友啦！');
+  }
+}
+</script>
+</body>
+</html>
+
